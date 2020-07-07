@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Bucket.Extensions
+namespace Horizon.Extensions
 {
     public static class UriExtensions
     {
