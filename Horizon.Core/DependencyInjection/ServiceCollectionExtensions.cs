@@ -18,10 +18,12 @@ namespace Horizon.Core.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddServiceExts(this IServiceCollection services, Action<HorizonBulider> builder)
         {
+
+            
             var service = services.First(x => x.ServiceType == typeof(IConfiguration));
             var configuration = (IConfiguration)service.ImplementationInstance;
-            var bucketBuild = new HorizonBulider(services, configuration);
-            builder(bucketBuild);
+            var build = new HorizonBulider(services, configuration);
+            builder(build);
             return services;
         }
 
