@@ -17,6 +17,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Horizon.ServiceStackRedis",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Horizon.AutoFac", "Horizon.AutoFac\Horizon.AutoFac.csproj", "{14AA0F45-0B8F-4947-A53F-2605CADC419A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Horizon.RocketMQ", "Horizon.RocketMQ\Horizon.RocketMQ.csproj", "{C3191846-1C1E-4D97-BF37-AED009CCD75A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Horizon.RabbitMQ", "Horizon.RabbitMQ\Horizon.RabbitMQ.csproj", "{0200889E-C73D-4225-8E48-EC73D09A2A15}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MQ", "MQ", "{7EB49A7F-BA9C-43A0-A078-E5B0F2938C05}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RPC", "RPC", "{8F02240C-9DE6-4A13-A6B5-E5B3586A578F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Horizon.GRPC", "Horizon.GRPC\Horizon.GRPC.csproj", "{879B6671-E743-4257-91E1-941F3E436C4D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,9 +61,26 @@ Global
 		{14AA0F45-0B8F-4947-A53F-2605CADC419A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14AA0F45-0B8F-4947-A53F-2605CADC419A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14AA0F45-0B8F-4947-A53F-2605CADC419A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3191846-1C1E-4D97-BF37-AED009CCD75A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3191846-1C1E-4D97-BF37-AED009CCD75A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3191846-1C1E-4D97-BF37-AED009CCD75A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3191846-1C1E-4D97-BF37-AED009CCD75A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0200889E-C73D-4225-8E48-EC73D09A2A15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0200889E-C73D-4225-8E48-EC73D09A2A15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0200889E-C73D-4225-8E48-EC73D09A2A15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0200889E-C73D-4225-8E48-EC73D09A2A15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{879B6671-E743-4257-91E1-941F3E436C4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{879B6671-E743-4257-91E1-941F3E436C4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{879B6671-E743-4257-91E1-941F3E436C4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{879B6671-E743-4257-91E1-941F3E436C4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C3191846-1C1E-4D97-BF37-AED009CCD75A} = {7EB49A7F-BA9C-43A0-A078-E5B0F2938C05}
+		{0200889E-C73D-4225-8E48-EC73D09A2A15} = {7EB49A7F-BA9C-43A0-A078-E5B0F2938C05}
+		{879B6671-E743-4257-91E1-941F3E436C4D} = {8F02240C-9DE6-4A13-A6B5-E5B3586A578F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4C2F5E75-15D5-4C12-968B-1C5117ADD1DB}

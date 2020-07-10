@@ -19,6 +19,8 @@ namespace Horizon.Consul
 
             return services;
 
+           
+
             //configuration.GetSection("ServiceDiscovery: Consul");
            
         }
