@@ -1,0 +1,15 @@
+{
+  "ServiceDiscovery": {
+    "ServiceName": "Horizon.Sample.GrpcServices",
+    "Version": "1.0.0-pre",
+    "HealthCheckTemplate": "",
+    "Endpoints": [],
+    "Consul": {
+      "HttpEndpoint": "http://127.0.0.1:8500",
+      "DnsEndpoint": {
+        "Address": "127.0.0.1",
+        "Port": 8600
+      }
+    }
+  }
+}
