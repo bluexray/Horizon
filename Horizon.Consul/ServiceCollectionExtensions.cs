@@ -21,7 +21,7 @@ namespace Horizon.Consul
         {
             //services.Configure<ConsulServiceDiscoveryOption>(configuration.GetSection("ServiceDiscovery"));
 
-            //services.AddSingleton<IRegistryHost, ConsulProxy>();
+            services.AddSingleton<IRegistryHost, ConsulProxy>();
 
             Console.WriteLine("consulproxy .....regsited");
 
@@ -39,9 +39,9 @@ namespace Horizon.Consul
         }
 
 
-        public static IServiceCollection AddConsul(this IServiceCollection services, Func<IRegistryHost> ConsulProxy)
+        public static IServiceCollection AddConsul(this IServiceCollection services, Func<IRegistryHost> registryHostFactory)
         {
-            var registryHost = ConsulProxy();
+            var registryHost = registryHostFactory();
             var serviceRegistry = new ServiceRegistry(registryHost);
             services.AddSingleton(serviceRegistry);
            

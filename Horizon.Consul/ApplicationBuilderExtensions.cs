@@ -9,10 +9,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Horizon.Core;
 using Horizon.Core.Model;
-using Consul;
 using Horizon.Core.Services;
 
 namespace Horizon.Consul
@@ -37,6 +34,8 @@ namespace Horizon.Consul
                 throw new ArgumentException("Missing Dependency", nameof(serviceDiscoveryOption.Consul));
 
             var loggerFactory = app.ApplicationServices.GetRequiredService<ILoggerFactory>();
+
+            
             var logger = loggerFactory.CreateLogger("HorzionServicesBulider");
 
 
@@ -69,7 +68,7 @@ namespace Horizon.Consul
                     logger.LogInformation($"Adding healthcheck for {serviceID},checking {healthCheck}");
                 }
                 var registryInformation = app.AddTenant(serviceDiscoveryOption.ServiceName, serviceDiscoveryOption.Version, address, healthCheckUri: healthCheck, tags: new[] { $"urlprefix-/{serviceDiscoveryOption.ServiceName}" });
-                //logger.LogInformation("Registering additional health check");
+                logger.LogInformation("Registering sevices...........");
 
                 // register service & health check cleanup
                 applicationLifetime.ApplicationStopping.Register(() =>
@@ -97,6 +96,8 @@ namespace Horizon.Consul
             var serviceRegistry = app.ApplicationServices.GetRequiredService<ServiceRegistry>();
             var serviceInformation = serviceRegistry.RegisterServiceAsync(serviceName, version, uri, healthCheckUri, tags)
                 .Result;
+
+            
 
             return serviceInformation;
         }

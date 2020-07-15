@@ -44,7 +44,10 @@ namespace Horizon.Sample.GrpcServices
             //configuration.GetSection("ServiceDiscovery: Consul")
             //services.Configure<ConsulHostConfiguration>(.GetSection("ServiceDiscovery:Consul"));
 
-            services.AddHorizonConsul(new ConfigurationBuilder().AddJsonFile("config\\servers.json").Build());
+            //services.AddHorizonConsul(new ConfigurationBuilder().AddJsonFile("config\\servers.json").Build());
+
+
+            services.AddHorizonConsul(Configuration);
 
 
             ConsulServiceDiscoveryOption host = new ConsulServiceDiscoveryOption();
@@ -55,6 +58,15 @@ namespace Horizon.Sample.GrpcServices
 
             Console.WriteLine($"servicename:{serviecname}");
             Console.WriteLine($"url:{s}");
+
+            services.AddCors(options => options.AddPolicy
+                                (
+                                "HorizonCors",
+                                p => p.SetIsOriginAllowedToAllowWildcardSubdomains()
+                                    .WithOrigins("https://*.cnblogs.com", "http://*.cnblogs.com")
+                                    .AllowAnyMethod().AllowAnyHeader()
+                                    )
+                                );
 
         }
 
@@ -68,7 +80,12 @@ namespace Horizon.Sample.GrpcServices
 
             app.UseHorizonConsul(Configuration);
 
+
+
             app.UseRouting();
+
+            // 添加健康检查路由地址
+            app.Map("/health", HealthMap);
 
             app.UseEndpoints(endpoints =>
             {
@@ -78,6 +95,14 @@ namespace Horizon.Sample.GrpcServices
                 {
                     await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
                 });
+            });
+        }
+
+        private static void HealthMap(IApplicationBuilder app)
+        {
+            app.Run(async context =>
+            {
+                await context.Response.WriteAsync("OK");
             });
         }
     }

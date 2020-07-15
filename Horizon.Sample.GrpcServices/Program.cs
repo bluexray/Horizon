@@ -28,12 +28,12 @@ namespace Horizon.Sample.GrpcServices
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                })
-//.ConfigureAppConfiguration((hostingContext, _config) =>
-//{
-//    _config.Add(new JsonConfigurationSource { Path = "config/servers.json", ReloadOnChange = true })
-//                    .Build();
-//})
-;
+                });
+        //.ConfigureAppConfiguration((hostingContext, _config) =>
+        //{
+        //    _config.Add(new JsonConfigurationSource { Path = "config/servers.json", ReloadOnChange = true })
+        //                    .Build();
+        //})
+
     }
 }
