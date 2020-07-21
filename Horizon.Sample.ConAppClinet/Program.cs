@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Grpc.Core;
 using Grpc.Net.Client;
@@ -22,12 +23,12 @@ namespace Horizon.Sample.ConAppClinet
             var token = "";
             var headers = new Metadata { { "Authorization", $"Bearer {token}" } };
 
-            
-
             var  service = http.CreateGrpcService<IStudentCollection>();
 
 
-            
+            //using var cancel = new CancellationTokenSource(TimeSpan.FromMinutes(1));
+            //var options = new CallOptions(cancellationToken: cancel.Token);
+
 
 
             var  result= await service.GetStudentAsync(new ResponeConext

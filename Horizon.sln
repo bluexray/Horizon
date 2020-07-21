@@ -45,6 +45,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeFirst", "CodeFirst", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ModelFirst", "ModelFirst", "{30645BCF-4287-4349-940C-5F4A296977A3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Horizon.Extensions", "Horizon.Extensions\Horizon.Extensions.csproj", "{D274765A-FECC-4C60-8A92-E32F14FB6E01}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -115,6 +117,10 @@ Global
 		{63DF5974-0F00-49FB-B4A8-D17E581685CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63DF5974-0F00-49FB-B4A8-D17E581685CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63DF5974-0F00-49FB-B4A8-D17E581685CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D274765A-FECC-4C60-8A92-E32F14FB6E01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D274765A-FECC-4C60-8A92-E32F14FB6E01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D274765A-FECC-4C60-8A92-E32F14FB6E01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D274765A-FECC-4C60-8A92-E32F14FB6E01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
