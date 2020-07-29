@@ -13,8 +13,8 @@
 - ~~Docker~~
 
 ## 包含扩展
-- ~~Qiniu Storage~~
-- ~~Aliyun OSS~~
+- Qiniu Storage
+- Aliyun OSS
 - ~~RestSharp~~
 
 ## YEP
