@@ -1,16 +1,16 @@
 ﻿using Horizon.Consul.Configurations;
+using Horizon.Core.Model;
+using Horizon.Core.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Horizon.Core.Model;
-using Horizon.Core.Services;
 
 namespace Horizon.Consul
 {
@@ -33,10 +33,6 @@ namespace Horizon.Consul
             if (serviceDiscoveryOption.Consul == null)
                 throw new ArgumentException("Missing Dependency", nameof(serviceDiscoveryOption.Consul));
 
-            var loggerFactory = app.ApplicationServices.GetRequiredService<ILoggerFactory>();
-
-            
-            var logger = loggerFactory.CreateLogger("HorzionServicesBulider");
 
 
             if (string.IsNullOrEmpty(serviceDiscoveryOption.ServiceName))
@@ -47,12 +43,12 @@ namespace Horizon.Consul
             if (serviceDiscoveryOption.Endpoints != null && serviceDiscoveryOption.Endpoints.Length > 0)
             {
                 
-                logger.LogInformation($"Using {serviceDiscoveryOption.Endpoints.Length} configured endpoints for service registration");
+                Log.Information($"Using {serviceDiscoveryOption.Endpoints.Length} configured endpoints for service registration");
                 addresses = serviceDiscoveryOption.Endpoints.Select(p => new Uri(p));
             }
             else
             {
-               logger.LogInformation($"Trying to use server.Features to figure out the service endpoint for registration.");
+               Log.Information($"Trying to use server.Features to figure out the service endpoint for registration.");
                 var features = app.Properties["server.Features"] as FeatureCollection;
                 addresses = features.Get<IServerAddressesFeature>().Addresses.Select(p => new Uri(p)).ToArray();
             }
@@ -60,20 +56,20 @@ namespace Horizon.Consul
             foreach (var address in addresses)
             {
                 var serviceID = GetServiceId(serviceDiscoveryOption.ServiceName, address);
-                logger.LogInformation($"Registering service {serviceID} for address {address}.");
+                Log.Information($"Registering service {serviceID} for address {address}.");
                 Uri healthCheck = null;
                 if (!string.IsNullOrEmpty(serviceDiscoveryOption.HealthCheckTemplate))
                 {
                     healthCheck = new Uri(address, serviceDiscoveryOption.HealthCheckTemplate);
-                    logger.LogInformation($"Adding healthcheck for {serviceID},checking {healthCheck}");
+                    Log.Information($"Adding healthcheck for {serviceID},checking {healthCheck}");
                 }
                 var registryInformation = app.AddTenant(serviceDiscoveryOption.ServiceName, serviceDiscoveryOption.Version, address, healthCheckUri: healthCheck, tags: new[] { $"urlprefix-/{serviceDiscoveryOption.ServiceName}" });
-                logger.LogInformation("Registering sevices...........");
+                Log.Information("Registering sevices...........");
 
                 // register service & health check cleanup
                 applicationLifetime.ApplicationStopping.Register(() =>
                 {
-                    logger.LogInformation("Removing tenant & additional health check");
+                    Log.Information("Removing tenant & additional health check");
                     app.RemoveTenant(registryInformation.Id);
                 });
             }

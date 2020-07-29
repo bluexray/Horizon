@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using Grpc.Core;
 using Horizon.Sample.Grpccontract;
@@ -54,6 +55,14 @@ namespace Horizon.Sample.ConAPPService
                             {
                                 listenOptions.Protocols = HttpProtocols.Http2;
                             });
+                            //op.Listen(IPAddress.Any, ports.httpPort, listenOptions =>
+                            //{
+                            //    listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+                            //});
+                            //op.Listen(IPAddress.Any, ports.grpcPort, listenOptions =>
+                            //{
+                            //    listenOptions.Protocols = HttpProtocols.Http2;
+                            //});
                         })
                         .Configure(app =>
                         {
