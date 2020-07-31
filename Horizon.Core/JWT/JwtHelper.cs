@@ -15,7 +15,7 @@ namespace Horizon.Core.JWT
         /// 颁发JWT字符串 /// </summary>
         /// <param name="tokenModel"></param>
         /// <returns></returns>
-        public static string GetJWT(TokenModel tokenModel)
+        public static dynamic BuildJwtToken(TokenModel tokenModel, AccessTokenType type=AccessTokenType.AccessToken)
         {
             var jwtConfig = new JwtAuthConfigModel();
             //过期时间（分钟）
@@ -48,21 +48,53 @@ namespace Horizon.Core.JWT
                     new Claim(JwtRegisteredClaimNames.Iss,jwtConfig.Issuer),
                     new Claim(JwtRegisteredClaimNames.Aud,jwtConfig.Audience),
                     new Claim(ClaimTypes.Role,tokenModel.Role),
+                    
                };
+
+           // var expires = dateTime.Add(TimeSpan.FromMinutes(type.Equals(AccessTokenType.AccessToken) ? exp : jwtConfig.TyRefreshTokenExpiresMinutespe));
             //秘钥
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.JWTSecretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var jwt = new JwtSecurityToken(
                 issuer: jwtConfig.Issuer,
-                audience: jwtConfig.Audience,//接收者，可以做变化
+                audience:  jwtConfig.Audience ,//接收者，可以做变化
                 claims: claims,
                 expires: dateTime.AddMinutes(exp),
                 signingCredentials: creds);
             var jwtHandler = new JwtSecurityTokenHandler();
-            var encodedJwt = jwtHandler.WriteToken(jwt);
-            return encodedJwt;
+
+            var accessToken = jwtHandler.WriteToken(jwt);//生成token
+
+            var refresh= new JwtSecurityToken(
+                issuer: jwtConfig.Issuer,
+                audience: jwtConfig.RefreshTokenAudience,//接收者，可以做变化
+                claims: claims,
+                expires: dateTime.AddMinutes(jwtConfig.RefreshTokenExpiresMinutes),
+                signingCredentials: creds);
+            var refreshToken = new JwtSecurityTokenHandler().WriteToken(refresh);
+
+
+            var responseJson = new
+            {
+                success = true,
+                access_token = accessToken,
+                expires_in = dateTime.AddMinutes(exp),
+                token_type = "Bearer",
+                refres_token= refreshToken,
+                expires_out=dateTime.AddMinutes(jwtConfig.RefreshTokenExpiresMinutes)
+            };
+
+            return responseJson;
         }
 
+
+        public static dynamic RefreshToken(TokenModel tm, AccessTokenType type=AccessTokenType.RefreshToken)
+        {
+
+            //验证refresh token
+            //生成新的access token
+           return JwtHelper.BuildJwtToken(tm);
+        }
 
         /// <summary>
         /// 解析token,未处理错误Token
@@ -73,6 +105,7 @@ namespace Horizon.Core.JWT
         {
             var jwtHandler = new JwtSecurityTokenHandler();
             JwtSecurityToken jwtToken = jwtHandler.ReadJwtToken(jwtStr);
+            
             object role = new object();
             object userName = new object();
             try
@@ -91,7 +124,30 @@ namespace Horizon.Core.JWT
             };
             return tm;
         }
+
+        public bool IsValidRefreshToken(string refreshToken)
+        {
+
+            try
+            {
+                var refresh = new JwtSecurityTokenHandler().ReadJwtToken(refreshToken);
+                object userName;
+           
+                    refresh.Payload.TryGetValue("UserName", out userName);
+                
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+            
+            return false;
+        }
     }
+
+
+
     /// <summary>
     /// 令牌
     /// </summary>
@@ -129,6 +185,18 @@ namespace Horizon.Core.JWT
         App=1,
         WeChat=2,
         Other=3
+    }
+
+    public class ComplexToken
+    {
+        public TokenModel AccessToken { get; set; }
+        public TokenModel RefreshToken { get; set; }
+    }
+
+    public enum AccessTokenType
+    {
+        AccessToken=0,
+        RefreshToken=1
     }
 
 }

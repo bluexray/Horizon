@@ -36,6 +36,8 @@ namespace Horizon.Core.JWT
                 OtherExp = double.Parse(Configuration["JwtAuth:OtherExp"]);
                 Issuer = Configuration["JwtAuth:Issuer"];
                 Audience = Configuration["JwtAuth:Audience"];
+                RefreshTokenAudience = Configuration["JwtAuth:RefreshTokenAudience"];
+                RefreshTokenExpiresMinutes = double.Parse(Configuration["JwtAuth:RefreshTokenExpiresMinutes"]);
             }
             catch (Exception e)
             {
@@ -73,5 +75,10 @@ namespace Horizon.Core.JWT
         /// 接收者
         /// </summary>
         public string Audience = "jwt";
+
+
+        public string RefreshTokenAudience = "RefreshTokenAudience";
+
+        public double RefreshTokenExpiresMinutes = 12;
     }
 }

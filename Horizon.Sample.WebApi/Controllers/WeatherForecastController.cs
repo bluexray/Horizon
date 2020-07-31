@@ -39,7 +39,7 @@ namespace Horizon.Sample.WebApi.Controllers
                 UserName = "admin"
             };
 
-            return Ok(JwtHelper.GetJWT(tokenmodel));
+            return Ok(JwtHelper.BuildJwtToken(tokenmodel));
 
 
             //var rng = new Random();
