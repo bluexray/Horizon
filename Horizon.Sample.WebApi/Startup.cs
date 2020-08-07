@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
+using SkyApm.Utilities.DependencyInjection;
 
 namespace Horizon.Sample.WebApi
 {
@@ -27,6 +28,8 @@ namespace Horizon.Sample.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddSkyApmExtensions();//add track
 
             //¿çÓò
             services.AddCors();
@@ -106,6 +109,8 @@ namespace Horizon.Sample.WebApi
             //ÊÚÈ¨
             app.UseAuthorization();
 
+
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

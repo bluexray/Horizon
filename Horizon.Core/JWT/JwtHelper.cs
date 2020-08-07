@@ -57,7 +57,7 @@ namespace Horizon.Core.JWT
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var jwt = new JwtSecurityToken(
                 issuer: jwtConfig.Issuer,
-                audience:  jwtConfig.Audience ,//接收者，可以做变化
+                audience:  jwtConfig.Audience ,//接收者，可以做变化 
                 claims: claims,
                 expires: dateTime.AddMinutes(exp),
                 signingCredentials: creds);
@@ -65,13 +65,19 @@ namespace Horizon.Core.JWT
 
             var accessToken = jwtHandler.WriteToken(jwt);//生成token
 
-            var refresh= new JwtSecurityToken(
+            var refreshToken = "";
+
+            if (type!=AccessTokenType.RefreshToken)
+            {
+                var refresh = new JwtSecurityToken(
                 issuer: jwtConfig.Issuer,
                 audience: jwtConfig.RefreshTokenAudience,//接收者，可以做变化
                 claims: claims,
                 expires: dateTime.AddMinutes(jwtConfig.RefreshTokenExpiresMinutes),
                 signingCredentials: creds);
-            var refreshToken = new JwtSecurityTokenHandler().WriteToken(refresh);
+                refreshToken = new JwtSecurityTokenHandler().WriteToken(refresh); 
+            }
+
 
 
             var responseJson = new
@@ -88,12 +94,50 @@ namespace Horizon.Core.JWT
         }
 
 
-        public static dynamic RefreshToken(TokenModel tm, AccessTokenType type=AccessTokenType.RefreshToken)
+        public static dynamic RefreshToken(string token)
         {
 
+            var tm = new TokenModel();
+            try
+            {
+                var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
+
+                object type = "";
+                object userName = "";
+                object role = "";
+                object project = "";
+                object tokentype = "";
+                jwt.Payload.TryGetValue("GrandType", out type);
+                jwt.Payload.TryGetValue("UserName", out userName);
+                jwt.Payload.TryGetValue("Role", out role);
+                jwt.Payload.TryGetValue("Project", out project);
+                jwt.Payload.TryGetValue("TokenType", out tokentype);
+
+                if (type.ToString().ToLower()=="refreshtoken")
+                {
+                    
+                    tm.Uid = jwt.Id;
+                    tm.GrandType = type.ToString();
+                    tm.Role = role.ToString();
+                    tm.Project = project.ToString();
+                    tm.TokenType = (TokenType)Enum.Parse(typeof(TokenType),tokentype.ToString());//mark 
+
+
+                  return  BuildJwtToken(tm, AccessTokenType.RefreshToken);
+                }
+
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            return null;
             //验证refresh token
             //生成新的access token
-           return JwtHelper.BuildJwtToken(tm);
+            //return JwtHelper.BuildJwtToken(tm);
         }
 
         /// <summary>
@@ -176,6 +220,11 @@ namespace Horizon.Core.JWT
         /// </summary>
 
         public TokenType TokenType;
+
+        /// <summary>
+        /// AccessToken,RefreshToken
+        /// </summary>
+        public string GrandType { get; set; }
     }
 
 

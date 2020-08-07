@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Horizon.Core.Router
+namespace Horizon.GRPC
 {
-    public interface IServiceSubscriberFactory
+    public interface IGrpcService
     {
 
     }

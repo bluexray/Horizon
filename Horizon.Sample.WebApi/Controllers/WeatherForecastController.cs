@@ -36,7 +36,8 @@ namespace Horizon.Sample.WebApi.Controllers
                 Project = "Horizon.Sample.WebApi",
                 Role = "admin",
                 TokenType = TokenType.Web,
-                UserName = "admin"
+                UserName = "admin",
+                GrandType = "AccessToken"
             };
 
             return Ok(JwtHelper.BuildJwtToken(tokenmodel));

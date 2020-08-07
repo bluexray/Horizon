@@ -1,5 +1,4 @@
 ﻿{
-
   "profiles": {
     "Horizon.Sample.WebApi": {
       "commandName": "Project",
@@ -7,7 +6,9 @@
       "launchUrl": "weatherforecast",
       "applicationUrl": "http://localhost:5000",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "SkyAPM.Agent.AspNetCore",
+        "SKYWALKING__SERVICENAME": "Horizon.Sample.WebApi"
       }
     }
   }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Grpc.Core;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using ProtoBuf.Grpc.Server;
+using SkyApm.Utilities.DependencyInjection;
 
 namespace Horizon.Sample.ConAPPService
 {
@@ -27,6 +29,7 @@ namespace Horizon.Sample.ConAPPService
             //    Ports = { new ServerPort("localhost", Port, ServerCredentials.Insecure) }
             //};
             //server.Services.AddCodeFirst(new MySevices());
+
             //server.Start();
 
             //Console.WriteLine("Greeter server listening on port " + Port);
@@ -47,7 +50,8 @@ namespace Horizon.Sample.ConAPPService
                         .ConfigureServices(services =>
                         {
                             services.AddCodeFirstGrpc();
-                            
+                            services.AddSkyApmExtensions();// add track
+
                         })
                         .ConfigureKestrel(op =>
                         {
@@ -81,7 +85,7 @@ namespace Horizon.Sample.ConAPPService
            {
                No = 1001,
                Age = 19,
-               Name = conext.Name+"..come from..grpc sercies!"
+               Name = conext.Name+"..come from..grpc services!"
            });
         }
     }

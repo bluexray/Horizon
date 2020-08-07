@@ -49,7 +49,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Horizon.Extensions", "Horiz
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Horizon.Sample.WebApi", "Horizon.Sample.WebApi\Horizon.Sample.WebApi.csproj", "{2D743257-FE82-40C3-B0AF-7FD0B08F62EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Horizon.IdentityServer", "Horizon.IdentityServer\Horizon.IdentityServer.csproj", "{9F537FE2-F20E-489A-9280-2D31500D1D8F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Horizon.IdentityServer", "Horizon.IdentityServer\Horizon.IdentityServer.csproj", "{9F537FE2-F20E-489A-9280-2D31500D1D8F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SKYAPM", "SKYAPM", "{955DFE07-1B9E-4385-9EBE-8BE229A962F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

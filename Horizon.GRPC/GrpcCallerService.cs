@@ -5,6 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Grpc.Core;
 using Serilog;
+using Horizon.Consul;
+using Horizon.Consul.Configurations;
+using Horizon.Core.Router;
+using Horizon.Core.Services;
+using Microsoft.Extensions.Configuration;
 
 namespace Horizon.GRPC
 {
@@ -83,5 +88,30 @@ namespace Horizon.GRPC
                 AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2Support", false);
             }
         }
+
+        public static dynamic GetGrpcServicesHosts(string serviceName,string serviceTags,IConfiguration configuration)
+        {
+
+            ConsulServiceDiscoveryOption serviceDiscoveryOption = new ConsulServiceDiscoveryOption();
+            configuration.GetSection("ServiceDiscovery").Bind(serviceDiscoveryOption);
+
+            var proxy = new ConsulProxy(serviceDiscoveryOption.Consul);
+
+            var rs = proxy.FindServiceInstancesAsync(serviceName,serviceTags);
+
+
+            LoadBalancerFactory loader = new LoadBalancerFactory(rs.Result);
+           var balancer= loader.Get(serviceName, LoadBalancerMode.Random).Result;
+
+          var reslut= balancer.SelectManyAsync();
+
+            var  response =new 
+            {
+                host = reslut.Result
+            };
+
+            return response;
+        }
+        
     }
 }

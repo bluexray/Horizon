@@ -11,5 +11,11 @@
         "Port": 8600
       }
     }
+  },
+  "Jaeger": {
+    //Jaeger上的服务名
+    "ServiceName": "Horizon.Sample.GrpcServices",
+    "AgentIp": "127.0.0.1",
+    "AgentPort": 6831
   }
 }

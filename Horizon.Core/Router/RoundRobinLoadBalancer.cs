@@ -1,6 +1,7 @@
 ﻿using Horizon.Core.Model;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,22 +13,30 @@ namespace Horizon.Core.Router
     /// </summary>
     public class RoundRobinLoadBalancer:ILoadBalancer
     {
-        private readonly IServiceSubscriber _subscriber;
+        private readonly IList<ServiceInformation> _subscriber;
         private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
         private int _index;
+        private readonly string _serviceName;
 
-        public RoundRobinLoadBalancer(IServiceSubscriber subscriber)
+        public RoundRobinLoadBalancer(IList<ServiceInformation> subscriber,string servicename)
         {
             _subscriber = subscriber;
+            _serviceName = servicename;
         }
 
         public async Task<ServiceInformation> Endpoint(CancellationToken ct = default(CancellationToken))
         {
-            var endpoints = await _subscriber.Endpoints(ct).ConfigureAwait(false);
+            var endpoints =  _subscriber;
             if (endpoints.Count == 0)
             {
-                return null;
+                throw new ArgumentNullException($"{_serviceName}");
             }
+
+            if (endpoints.Count==1)
+            {
+                return endpoints[0];
+            }
+
 
             await _lock.WaitAsync(ct).ConfigureAwait(false);
             try
@@ -49,7 +58,7 @@ namespace Horizon.Core.Router
 
         public Task<HostAndPort> SelectManyAsync(CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(Endpoint().Result.HostAndPort);
         }
     }
 }

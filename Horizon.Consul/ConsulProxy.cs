@@ -62,12 +62,27 @@ namespace Horizon.Consul
             return instances.ToList();
         }
 
+        public async Task<IList<ServiceInformation>> FindServiceInstancesAsync(string name,string tags)
+        {
+            var queryResult = await _consul.Health.Service(name, tag: tags, passingOnly: true);
+            var instances = queryResult.Response.Select(serviceEntry => new ServiceInformation
+            {
+                Name = serviceEntry.Service.Service,
+                HostAndPort = new HostAndPort(serviceEntry.Service.Address, serviceEntry.Service.Port),
+                Version = GetVersionFromStrings(serviceEntry.Service.Tags),
+                Tags = serviceEntry.Service.Tags ?? Enumerable.Empty<string>(),
+                Id = serviceEntry.Service.ID
+            });
+
+            return instances.ToList();
+        }
+
         public async Task<IList<ServiceInformation>> FindServiceInstancesWithVersionAsync(string name, string version)
         {
             var instances = await FindServiceInstancesAsync(name);
             var range = new SemVer.Range(version);
 
-            return instances.Where(x => range.IsSatisfied(x.Version)).ToArray();
+            return instances.Where(x => range.IsSatisfied(x.Version)).ToList();
         }
 
         private async Task<IDictionary<string, string[]>> GetServicesCatalogAsync()

@@ -9,11 +9,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Grpc.AspNetCore" Version="2.27.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.30.0" />
+    <PackageReference Include="SkyAPM.Agent.AspNetCore" Version="0.9.0" />
+    <PackageReference Include="SkyAPM.Transport.Grpc" Version="0.9.1" />
+    <PackageReference Include="SkyAPM.Transport.Grpc.Protocol" Version="0.9.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Horizon.Consul\Horizon.Consul.csproj" />
+    <ProjectReference Include="..\Horizon.GRPC\Horizon.GRPC.csproj" />
   </ItemGroup>
 
 </Project>

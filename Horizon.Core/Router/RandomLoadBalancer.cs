@@ -11,21 +11,21 @@ namespace Horizon.Core.Router
     public class RandomLoadBalancer : ILoadBalancer
     {
 
-        private readonly Func<Task<IList<ServiceInformation>>> _services;
+        private readonly IList<ServiceInformation> _services;
         private readonly string _serviceName;
         private readonly Func<int, int, int> _generate;
-        private readonly Random _random;
-        public RandomLoadBalancer(Func<Task<IList<ServiceInformation>>> services, string serviceName)
+
+        public RandomLoadBalancer(IList<ServiceInformation> services, string serviceName)
         {
             _services = services;
             _serviceName = serviceName;
-            _random = new Random();
-            _generate = (min, max) => _random.Next(min, max);
+            var random = new Random();
+            _generate = (min, max) => random.Next(min, max);
         }
 
         public async Task<HostAndPort> SelectManyAsync(CancellationToken ct = default)
         {
-            var services = await _services.Invoke();
+            var services = _services;
 
             if (services == null)
                 throw new ArgumentNullException($"{_serviceName}");
@@ -35,7 +35,7 @@ namespace Horizon.Core.Router
 
             var index = _generate(0, services.Count());
 
-            return services[index].HostAndPort;
+            return await Task.FromResult(services[index].HostAndPort);
         }
     }
 }

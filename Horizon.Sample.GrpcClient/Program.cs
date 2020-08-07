@@ -13,6 +13,9 @@ namespace Horizon.Sample.GrpcClient
         static async System.Threading.Tasks.Task Main(string[] args)
         {
 
+            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2Support", true);
+
             var httpClientHandler = new HttpClientHandler();
             // Return `true` to allow certificates that are untrusted/invalid
             httpClientHandler.ServerCertificateCustomValidationCallback =
@@ -20,10 +23,10 @@ namespace Horizon.Sample.GrpcClient
             var httpClient = new HttpClient(httpClientHandler);
 
 
-            //AppContext.SetSwitch(
-            //    "System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
-            var channel = GrpcChannel.ForAddress("https://127.0.0.1:5001",new GrpcChannelOptions { HttpClient = httpClient });
+
+
+            var channel = GrpcChannel.ForAddress("http://127.0.0.1:5021", new GrpcChannelOptions { HttpClient = httpClient });
 
             //var channel = new Channel("127.0.0.1:50051", ChannelCredentials.Insecure);
 

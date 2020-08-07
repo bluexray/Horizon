@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Horizon.Consul;
 using Horizon.Consul.Configurations;
 using Horizon.Core.DependencyInjection;
+using Horizon.GRPC;
+using Horizon.GRPC.Interceptors;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -12,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SkyApm.Utilities.DependencyInjection;
 
 namespace Horizon.Sample.GrpcServices
 {
@@ -32,7 +35,20 @@ namespace Horizon.Sample.GrpcServices
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddGrpc();
+            services.AddGrpc(optons =>
+            {
+                optons.Interceptors.Add<JaegerTracingInterceptor>();//注册Grpc全局拦截器
+            });
+
+            //注册gRPC服务 + 单个服务拦截
+            //services.AddGrpc().AddServiceOptions<GreeterService>(options => {
+            //    options.Interceptors.Add<MyServerInterceptor1>();
+            //});
+
+
+
+
+            services.AddSkyApmExtensions();
 
 
             IConfiguration config = new ConfigurationBuilder()
@@ -50,6 +66,8 @@ namespace Horizon.Sample.GrpcServices
 
 
             services.AddHorizonConsul(Configuration);
+
+            services.AddHorizonGrpc<Startup>(config);
 
 
             ConsulServiceDiscoveryOption host = new ConsulServiceDiscoveryOption();
