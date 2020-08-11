@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Horizon.Consul\Horizon.Consul.csproj" />
     <ProjectReference Include="..\Horizon.Sample.Grpccontract\Horizon.Sample.Grpccontract.csproj" />
   </ItemGroup>
 

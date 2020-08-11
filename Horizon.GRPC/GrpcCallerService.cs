@@ -1,6 +1,7 @@
 ﻿using Grpc.Net.Client;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Grpc.Core;
@@ -89,7 +90,8 @@ namespace Horizon.GRPC
             }
         }
 
-        public static dynamic GetGrpcServicesHosts(string serviceName,string serviceTags,IConfiguration configuration)
+        public static string
+            GetGrpcServicesHosts(string serviceName,string serviceTags,IConfiguration configuration)
         {
 
             ConsulServiceDiscoveryOption serviceDiscoveryOption = new ConsulServiceDiscoveryOption();
@@ -97,20 +99,25 @@ namespace Horizon.GRPC
 
             var proxy = new ConsulProxy(serviceDiscoveryOption.Consul);
 
+
+            var r = proxy.FindAllServicesAsync().Result;
+
+          var q=  r.FirstOrDefault(x => x.Name == serviceName);
+
+          return q.HostAndPort.ToString();
+
+
             var rs = proxy.FindServiceInstancesAsync(serviceName,serviceTags);
 
 
             LoadBalancerFactory loader = new LoadBalancerFactory(rs.Result);
-           var balancer= loader.Get(serviceName, LoadBalancerMode.Random).Result;
+            var balancer= loader.Get(serviceName, LoadBalancerMode.Random).Result;
 
-          var reslut= balancer.SelectManyAsync();
+            var reslut= balancer.SelectManyAsync();
 
-            var  response =new 
-            {
-                host = reslut.Result
-            };
 
-            return response;
+
+            return reslut.Result.ToString();
         }
         
     }

@@ -65,6 +65,7 @@ namespace Horizon.Consul
         public async Task<IList<ServiceInformation>> FindServiceInstancesAsync(string name,string tags)
         {
             var queryResult = await _consul.Health.Service(name, tag: tags, passingOnly: true);
+            
             var instances = queryResult.Response.Select(serviceEntry => new ServiceInformation
             {
                 Name = serviceEntry.Service.Service,
@@ -150,7 +151,7 @@ namespace Horizon.Consul
                 Tags = tagList.ToArray(),
                 Address = uri.Host,
                 Port = uri.Port,
-                Check = new AgentServiceCheck { HTTP = check, Interval = TimeSpan.FromSeconds(2) }
+                Check = new AgentServiceCheck { HTTP = check, Interval = TimeSpan.FromSeconds(3) }
             };
 
             await _consul.Agent.ServiceRegister(registration);

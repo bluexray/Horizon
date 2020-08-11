@@ -4,7 +4,10 @@ using System.Threading.Channels;
 using Grpc.Core;
 using Grpc.Net.Client;
 using Grpc.Net.ClientFactory;
+using Horizon.GRPC;
 using Horizon.Sample.GrpcServices;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
 
 namespace Horizon.Sample.GrpcClient
 {
@@ -24,9 +27,15 @@ namespace Horizon.Sample.GrpcClient
 
 
 
+            IConfiguration config = new ConfigurationBuilder()
+                .Add(new JsonConfigurationSource { Path = "config/servers.json", ReloadOnChange = true })
+                .Build();
 
+           var  url=GrpcCallerService.GetGrpcServicesHosts("Horizon.Sample.GrpcServices", "", config);
 
-            var channel = GrpcChannel.ForAddress("http://127.0.0.1:5021", new GrpcChannelOptions { HttpClient = httpClient });
+            url = "http://" + url;
+
+            var channel = GrpcChannel.ForAddress(url, new GrpcChannelOptions { HttpClient = httpClient });
 
             //var channel = new Channel("127.0.0.1:50051", ChannelCredentials.Insecure);
 

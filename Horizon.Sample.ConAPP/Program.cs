@@ -51,6 +51,7 @@ namespace Horizon.Sample.ConAPPService
                         {
                             services.AddCodeFirstGrpc();
                             services.AddSkyApmExtensions();// add track
+                            
 
                         })
                         .ConfigureKestrel(op =>

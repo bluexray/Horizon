@@ -7,6 +7,7 @@ using Horizon.Consul.Configurations;
 using Horizon.Core.DependencyInjection;
 using Horizon.GRPC;
 using Horizon.GRPC.Interceptors;
+using Horizon.Sample.GrpcServices.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -65,7 +66,7 @@ namespace Horizon.Sample.GrpcServices
             //services.AddHorizonConsul(new ConfigurationBuilder().AddJsonFile("config\\servers.json").Build());
 
 
-            services.AddHorizonConsul(Configuration);
+            services.AddHorizonConsul(Configuration);//增加consul的配置
 
             services.AddHorizonGrpc<Startup>(config);
 
@@ -79,14 +80,14 @@ namespace Horizon.Sample.GrpcServices
             Console.WriteLine($"servicename:{serviecname}");
             Console.WriteLine($"url:{s}");
 
-            services.AddCors(options => options.AddPolicy
-                                (
-                                "HorizonCors",
-                                p => p.SetIsOriginAllowedToAllowWildcardSubdomains()
-                                    .WithOrigins("https://*.cnblogs.com", "http://*.cnblogs.com")
-                                    .AllowAnyMethod().AllowAnyHeader()
-                                    )
-                                );
+            //services.AddCors(options => options.AddPolicy
+            //                    (
+            //                    "HorizonCors",
+            //                    p => p.SetIsOriginAllowedToAllowWildcardSubdomains()
+            //                        .WithOrigins("https://*.cnblogs.com", "http://*.cnblogs.com")
+            //                        .AllowAnyMethod().AllowAnyHeader()
+            //                        )
+            //                    );
 
         }
 
@@ -98,7 +99,7 @@ namespace Horizon.Sample.GrpcServices
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHorizonConsul(Configuration);
+            app.UseHorizonConsul(Configuration);//使用consul
 
 
 
@@ -110,6 +111,7 @@ namespace Horizon.Sample.GrpcServices
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGrpcService<GreeterService>();
+                endpoints.MapGrpcService<HealthCheckService>();
 
                 endpoints.MapGet("/", async context =>
                 {
