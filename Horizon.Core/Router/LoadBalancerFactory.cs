@@ -25,7 +25,7 @@ namespace Horizon.Core.Router
                 case LoadBalancerMode.RoundRobin:
                     return new RoundRobinLoadBalancer(_service, serviceName);
                 default:
-                    return new NoLoadBalancer(_service);//未实现
+                    return new NoLoadBalancer(_service);
             }
         }
     }

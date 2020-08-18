@@ -31,7 +31,7 @@ namespace Horizon.Sample.GrpcClient
                 .Add(new JsonConfigurationSource { Path = "config/servers.json", ReloadOnChange = true })
                 .Build();
 
-           var  url=GrpcCallerService.GetGrpcServicesHosts("Horizon.Sample.GrpcServices", "", config);
+           var  url=GrpcServiceManager.GetGrpcServicesHosts("Horizon.Sample.GrpcServices", "", config);
 
             url = "http://" + url;
 

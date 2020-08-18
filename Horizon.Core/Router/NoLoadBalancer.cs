@@ -1,4 +1,6 @@
-﻿using Horizon.Core.Model;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Horizon.Core.Model;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -6,16 +8,17 @@ namespace Horizon.Core.Router
 {
     internal class NoLoadBalancer : ILoadBalancer
     {
-        private object p;
+        private readonly IList<ServiceInformation> _services;
 
-        public NoLoadBalancer(object p)
+        public NoLoadBalancer(IList<ServiceInformation> services)
         {
-            this.p = p;
+            _services = services;
         }
 
-        public Task<HostAndPort> SelectManyAsync(CancellationToken ct = default)
+        public async Task<HostAndPort> SelectManyAsync(CancellationToken ct = default)
         {
-            throw new System.NotImplementedException();
+            var service = await Task.FromResult(_services.FirstOrDefault());
+            return service.HostAndPort;
         }
     }
 }

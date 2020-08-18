@@ -22,7 +22,7 @@ namespace Horizon.Sample.ConAppClinet
                 .CreateLogger();
 
 
-            await GrpcCallerService.CallService("http://localhost:10042", async channel =>
+            await GrpcServiceManager.CallService("http://localhost:10042", async channel =>
              {
                  var clinet = channel.CreateGrpcService<IStudentCollection>();
                  var rs = await clinet.GetStudentAsync(new ResponeConext

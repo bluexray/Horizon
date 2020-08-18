@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
 using System.Threading.Tasks;
+using Horizon.DataAccess;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using SkyApm.Utilities.DependencyInjection;
@@ -30,6 +31,10 @@ namespace Horizon.Sample.WebApi
             services.AddControllers();
 
             services.AddSkyApmExtensions();//add track
+
+
+            services.AddHorizonORM(Configuration);
+            
 
             //øÁ”Ú
             services.AddCors();

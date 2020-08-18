@@ -68,7 +68,6 @@ namespace Horizon.Sample.WebApi.Controllers
             //var tm = JwtHelper.SerializeJWT(tokenHeader);
 
 
-            return null;
             //var rng = new Random();
             //return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             //    {

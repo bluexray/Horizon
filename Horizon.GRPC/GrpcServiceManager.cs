@@ -14,7 +14,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Horizon.GRPC
 {
-    public static class GrpcCallerService
+    public static class GrpcServiceManager
     {
 
         
@@ -25,9 +25,18 @@ namespace Horizon.GRPC
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
             AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2Support", true);
 
+
+
+            //设置发送和接送数据大小
+            var  options = new GrpcChannelOptions
+            { 
+                 MaxReceiveMessageSize = int.MaxValue,
+                 MaxSendMessageSize = int.MaxValue
+            };
+
             //GrpcClientFactory.AllowUnencryptedHttp2 = true;
 
-            var channel = GrpcChannel.ForAddress(urlGrpc);
+            var channel = GrpcChannel.ForAddress(urlGrpc,options);
 
             /*
             using var httpClientHandler = new HttpClientHandler
@@ -47,7 +56,7 @@ namespace Horizon.GRPC
             }
             catch (RpcException e)
             {
-                //Log.Error("Error calling via grpc: {Status} - {Message}", e.Status, e.Message);
+                Log.Error("Error calling via grpc: {Status} - {Message}", e.Status, e.Message);
                 return default;
             }
             finally
