@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Horizon.Consul.Configuration\Horizon.Consul.Configuration.csproj" />
     <ProjectReference Include="..\Horizon.Core\Horizon.Core.csproj" />
     <ProjectReference Include="..\Horizon.DataAccess.Repository\Horizon.DataAccess.Repository.csproj" />
     <ProjectReference Include="..\Horizon.DataAccess\Horizon.DataAccess.csproj" />

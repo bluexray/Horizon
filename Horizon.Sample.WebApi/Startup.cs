@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Horizon.DataAccess.Repository;
 using System;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,10 +33,10 @@ namespace Horizon.Sample.WebApi
 
             services.AddSkyApmExtensions();//add track
 
-
+            
             services.AddHorizonORM(Configuration);
             
-
+            
             //¿çÓò
             services.AddCors();
             services.AddCors(options =>

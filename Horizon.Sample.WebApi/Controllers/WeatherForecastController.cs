@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Horizon.Core.JWT;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Horizon.Sample.WebApi.Controllers
@@ -20,9 +21,13 @@ namespace Horizon.Sample.WebApi.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        private  readonly IConfiguration _configuration;
+        
+
+        public WeatherForecastController(ILogger<WeatherForecastController> logger,IConfiguration configuration)
         {
             _logger = logger;
+            _configuration=configuration;
         }
 
         [HttpGet]
@@ -76,6 +81,13 @@ namespace Horizon.Sample.WebApi.Controllers
             //        Summary = Summaries[rng.Next(Summaries.Length)]
             //    })
             //    .ToArray();
+        }
+
+        [HttpGet]
+        [Route("api/GetMsg")]
+        public string GetMsg()
+        {
+            return _configuration["ConnectionString"].ToString();
         }
     }
 }

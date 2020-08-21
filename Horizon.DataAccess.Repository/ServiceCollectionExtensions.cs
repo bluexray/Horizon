@@ -4,42 +4,31 @@ using Horizon.Core.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Horizon.DataAccess
+namespace Horizon.DataAccess.Repository
 {
     public static class ServiceCollectionExtensions
     {
+        /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
 
         public static IServiceCollection AddHorizonORM(this IServiceCollection services, IConfiguration configuration, ServiceLifetime contextLifetime = ServiceLifetime.Scoped, string section = "DbConfig")
         {
 
-            MutiDbOperate dboption = new MutiDbOperate();
+            MutiDbOperate connectOptions = new MutiDbOperate();
 
-           var result =configuration.GetSection("DbConfig");//.Bind(dboption);
+           configuration.GetSection(section).Bind(connectOptions);
 
-
-           var jwt = configuration.GetSection("JwtAuth")["Audience"].ToString();
-
-           var h = result["HitRate"].ToString();
-           var s = result["ConnectionString"].ToString();
-
-           result.Bind(dboption);
-
-
-            _ = dboption.DbName;
-           //services.Configure<MutiDbOperate>(configuration.GetSection(section));
-            var connectOptions = configuration.GetSection(section).Get<List<MutiDbOperate>>();
+            //var connectOptions = configuration.GetSection(section).Get<List<MutiDbOperate>>();
             if (connectOptions != null)
             {
-
-                foreach (var option in connectOptions)
-                {
+                //new HorizonDataClient(connectOptions);
+ 
                     if (contextLifetime == ServiceLifetime.Scoped)
-                        services.AddScoped(s => new HorizonDataClient(option));
+                        services.AddScoped(s => new HorizonDataClient(connectOptions));
                     if (contextLifetime == ServiceLifetime.Singleton)
-                        services.AddSingleton(s => new HorizonDataClient(option));
+                        services.AddSingleton(s => new HorizonDataClient(connectOptions));
                     if (contextLifetime == ServiceLifetime.Transient)
-                        services.AddTransient(s => new HorizonDataClient(option));
-                }
+                        services.AddTransient(s => new HorizonDataClient(connectOptions));
+                
             }
 
             return services;
@@ -63,5 +52,18 @@ namespace Horizon.DataAccess
         }
 
 
+        /// <summary>
+        /// 添加数据库的仓库模式支持
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="config"></param>
+        /// <param name="contextLifetime"></param>
+        /// <param name="section"></param>
+        /// <returns></returns>
+        public  static IServiceCollection AddHorizonDbRespository(this IServiceCollection services,IConfiguration config, ServiceLifetime contextLifetime=ServiceLifetime.Scoped,string section="DbConfig")
+        {
+
+            return  services;
+        }
     }
 }
