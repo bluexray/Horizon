@@ -1,4 +1,4 @@
-using Horizon.Core.JWT;
+ï»¿using Horizon.Core.JWT;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -34,17 +34,17 @@ namespace Horizon.Sample.WebApi
             services.AddSkyApmExtensions();//add track
 
             
-            services.AddHorizonORM(Configuration);
+            services.AddHorizonORM(Configuration);//add orm
             
             
-            //¿çÓò
+            //è·¨åŸŸ
             services.AddCors();
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", p => p.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
             });
 
-            //×¢Èëjwt,Ìí¼ÓJWT Scheme
+            //æ³¨å…¥jwt,æ·»åŠ JWT Scheme
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -55,39 +55,39 @@ namespace Horizon.Sample.WebApi
                 var jwtConfig = new JwtAuthConfigModel();
                 o.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer = true, //ÊÇ·ñÑéÖ¤Issuer
-                    ValidateAudience = true, //ÊÇ·ñÑéÖ¤Audience
-                    ValidateIssuerSigningKey = true, //ÊÇ·ñÑéÖ¤SecurityKey
-                    ValidateLifetime = true, //ÊÇ·ñÑéÖ¤³¬Ê±  µ±ÉèÖÃexpºÍnbfÊ±ÓĞĞ§ Í¬Ê±ÆôÓÃClockSkew 
-                    ClockSkew = TimeSpan.FromSeconds(30), //×¢ÒâÕâÊÇ»º³å¹ıÆÚÊ±¼ä£¬×ÜµÄÓĞĞ§Ê±¼äµÈÓÚÕâ¸öÊ±¼ä¼ÓÉÏjwtµÄ¹ıÆÚÊ±¼ä£¬Èç¹û²»ÅäÖÃ£¬Ä¬ÈÏÊÇ5·ÖÖÓ
+                    ValidateIssuer = true, //æ˜¯å¦éªŒè¯Issuer
+                    ValidateAudience = true, //æ˜¯å¦éªŒè¯Audience
+                    ValidateIssuerSigningKey = true, //æ˜¯å¦éªŒè¯SecurityKey
+                    ValidateLifetime = true, //æ˜¯å¦éªŒè¯è¶…æ—¶  å½“è®¾ç½®expå’Œnbfæ—¶æœ‰æ•ˆ åŒæ—¶å¯ç”¨ClockSkew 
+                    ClockSkew = TimeSpan.FromSeconds(30), //æ³¨æ„è¿™æ˜¯ç¼“å†²è¿‡æœŸæ—¶é—´ï¼Œæ€»çš„æœ‰æ•ˆæ—¶é—´ç­‰äºè¿™ä¸ªæ—¶é—´åŠ ä¸Šjwtçš„è¿‡æœŸæ—¶é—´ï¼Œå¦‚æœä¸é…ç½®ï¼Œé»˜è®¤æ˜¯5åˆ†é’Ÿ
                     ValidAudience = jwtConfig.Audience, //Audience
-                    ValidIssuer = jwtConfig.Issuer, //Issuer£¬ÕâÁ½ÏîºÍÇ°ÃæÇ©·¢jwtµÄÉèÖÃÒ»ÖÂ
+                    ValidIssuer = jwtConfig.Issuer, //Issuerï¼Œè¿™ä¸¤é¡¹å’Œå‰é¢ç­¾å‘jwtçš„è®¾ç½®ä¸€è‡´
                     RequireExpirationTime = true,
                     IssuerSigningKey =
                         new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes(Configuration["JwtAuth:SecurityKey"])) //ÄÃµ½SecurityKey
+                            Encoding.UTF8.GetBytes(Configuration["JwtAuth:SecurityKey"])) //æ‹¿åˆ°SecurityKey
                 };
                 o.Events = new JwtBearerEvents
                 {
-                    //ÑéÖ¤Ê§°ÜºóÍ£Ö¹ÏìÓ¦
+                    //éªŒè¯å¤±è´¥ååœæ­¢å“åº”
                     OnChallenge = p =>
                     {
                         p.HandleResponse();
 
 
-                        var payload = "{\"Success\":false,\"Msg\":\"ºÜ±§Ç¸£¬ÄúÎŞÈ¨·ÃÎÊ¸Ã½Ó¿Ú\",\"StatusCode\":401}";
-                        //×Ô¶¨Òå·µ»ØµÄÊı¾İÀàĞÍ
+                        var payload = "{\"Success\":false,\"Msg\":\"å¾ˆæŠ±æ­‰ï¼Œæ‚¨æ— æƒè®¿é—®è¯¥æ¥å£\",\"StatusCode\":401}";
+                        //è‡ªå®šä¹‰è¿”å›çš„æ•°æ®ç±»å‹
                         p.Response.ContentType = "application/json";
-                        //×Ô¶¨Òå·µ»Ø×´Ì¬Âë£¬Ä¬ÈÏÎª401 ÎÒÕâÀï¸Ä³É 200
+                        //è‡ªå®šä¹‰è¿”å›çŠ¶æ€ç ï¼Œé»˜è®¤ä¸º401 æˆ‘è¿™é‡Œæ”¹æˆ 200
                         p.Response.StatusCode = 200;
                         //context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                        //Êä³öJsonÊı¾İ½á¹û
+                        //è¾“å‡ºJsonæ•°æ®ç»“æœ
                         p.Response.WriteAsync(payload);
                         return Task.FromResult(0);
                     },
                     OnAuthenticationFailed = context =>
                     {
-                        // Èç¹û¹ıÆÚ£¬Ôò°Ñ<ÊÇ·ñ¹ıÆÚ>Ìí¼Óµ½£¬·µ»ØÍ·ĞÅÏ¢ÖĞ
+                        // å¦‚æœè¿‡æœŸï¼Œåˆ™æŠŠ<æ˜¯å¦è¿‡æœŸ>æ·»åŠ åˆ°ï¼Œè¿”å›å¤´ä¿¡æ¯ä¸­
                         if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
                         {
                             context.Response.Headers.Add("Token-Expired", "true");
@@ -110,9 +110,9 @@ namespace Horizon.Sample.WebApi
 
             app.UseRouting();
 
-            //Éí·İÑéÖ¤
+            //èº«ä»½éªŒè¯
             app.UseAuthentication();
-            //ÊÚÈ¨
+            //æˆæƒ
             app.UseAuthorization();
 
 

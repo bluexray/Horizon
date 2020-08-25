@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,14 +24,14 @@ namespace Horizon.Sample.WebApi
                     
 
                     webBuilder.ConfigureAppConfiguration((host, config) =>
-                               {
+                               { 
                                    var  env =host.HostingEnvironment;
-                                   //ÆôÓÃconsul×÷Îª×¢²áÖÐÐÄ
-                                   config.AddHorizonConsulCenter("Horizon/Horizon.MySql", ops =>
+                                   //å¯ç”¨consulä½œä¸ºæ³¨å†Œä¸­å¿ƒ
+                                   config.AddHorizonConsulCenter($"Horizon.{env}/Horizon.MySql", ops =>
                                    {
                                        ops.ConsulConfigurationOptions = co => { co.Address = new Uri("http://172.16.100.198:8500/"); };
                                        ops.Optional = true;
-                                       ops.ReloadOnChange = true;//¸üÐÂºóÖØÐÂ¼ÓÔØ
+                                       ops.ReloadOnChange = true;//æ›´æ–°åŽé‡æ–°åŠ è½½
                                        ops.OnLoadException = exp => { exp.Ignore = true; };
                                    });
                                    host.Configuration = config.Build();
