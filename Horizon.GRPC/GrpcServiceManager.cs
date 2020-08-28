@@ -102,7 +102,7 @@ namespace Horizon.GRPC
         public static string
             GetGrpcServicesHosts(string serviceName,string serviceTags,IConfiguration configuration)
         {
-
+            
             ConsulServiceDiscoveryOption serviceDiscoveryOption = new ConsulServiceDiscoveryOption();
             configuration.GetSection("ServiceDiscovery").Bind(serviceDiscoveryOption);
 

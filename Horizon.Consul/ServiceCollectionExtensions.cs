@@ -23,7 +23,7 @@ namespace Horizon.Consul
 
             services.AddSingleton<IRegistryHost, ConsulProxy>();
 
-            Console.WriteLine("consulproxy .....regsited");
+            //Console.WriteLine("consulproxy .....regsited");
 
 
             services.RegisterDnsLookup();

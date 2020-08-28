@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Horizon.Consul;
+﻿using Horizon.Consul;
 using Horizon.Consul.Configurations;
-using Horizon.Core.DependencyInjection;
 using Horizon.GRPC;
 using Horizon.GRPC.Interceptors;
 using Horizon.Sample.GrpcServices.Services;
@@ -16,6 +11,7 @@ using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SkyApm.Utilities.DependencyInjection;
+using System;
 
 namespace Horizon.Sample.GrpcServices
 {
@@ -46,6 +42,7 @@ namespace Horizon.Sample.GrpcServices
             //    options.Interceptors.Add<MyServerInterceptor1>();
             //});
 
+            
 
 
 
@@ -101,7 +98,7 @@ namespace Horizon.Sample.GrpcServices
 
             app.UseHorizonConsul(Configuration);//使用consul
 
-
+           
 
             app.UseRouting();
 

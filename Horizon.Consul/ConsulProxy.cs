@@ -138,7 +138,7 @@ namespace Horizon.Consul
         public async Task<ServiceInformation> RegisterServiceAsync(string serviceName, string version, Uri uri, Uri healthCheckUri = null, IEnumerable<string> tags = null)
         {
             var serviceId = GetServiceId(serviceName, uri);
-            string check = healthCheckUri?.ToString() ?? $"{uri}".TrimEnd('/') + "/status";
+            string check = healthCheckUri?.ToString() ?? $"{uri}".TrimEnd('/') + "/health";
 
             string versionLabel = $"{VERSION_PREFIX}{version}";
             var tagList = (tags ?? Enumerable.Empty<string>()).ToList();
@@ -151,7 +151,8 @@ namespace Horizon.Consul
                 Tags = tagList.ToArray(),
                 Address = uri.Host,
                 Port = uri.Port,
-                Check = new AgentServiceCheck { HTTP = check, Interval = TimeSpan.FromSeconds(3) }
+                Check = new AgentServiceCheck { HTTP = check, Interval = TimeSpan.FromSeconds(5),Timeout = TimeSpan.FromSeconds(15),DeregisterCriticalServiceAfter = TimeSpan.FromSeconds(15)}
+                //Check = new AgentServiceCheck { GRPC = check, GRPCUseTLS = false,Interval = TimeSpan.FromSeconds(5),Timeout = TimeSpan.FromSeconds(15),DeregisterCriticalServiceAfter = TimeSpan.FromSeconds(15)}
             };
 
             await _consul.Agent.ServiceRegister(registration);
@@ -195,7 +196,11 @@ namespace Horizon.Consul
                 Notes = notes,
                 ServiceID = serviceId,
                 HTTP = checkUri.ToString(),
-                Interval = interval
+                //GRPC = checkUri.ToString(),
+                //GRPCUseTLS = false,
+                Interval = interval,
+                Timeout = TimeSpan.FromSeconds(15),
+                DeregisterCriticalServiceAfter = TimeSpan.FromSeconds(15)
             };
             var writeResult = await _consul.Agent.CheckRegister(checkRegistration);
             bool isSuccess = writeResult.StatusCode == HttpStatusCode.OK;

@@ -1,21 +1,21 @@
 {
-  "ServiceDiscovery": {
-    "ServiceName": "Horizon.Sample.GrpcServices",
-    "Version": "1.0.0-pre",
-    "HealthCheckTemplate": "localhost:5001/health",
-    "Endpoints": [],
-    "Consul": {
-      "HttpEndpoint": "http://172.16.100.198:8500",  //consul的地址
-      "DnsEndpoint": {
-        "Address": "127.0.0.1",
-        "Port": 8600
-      }
+    "ServiceDiscovery": {
+        "ServiceName": "Horizon.Sample.GrpcServices",
+        "Version": "1.0.0-pre",
+        "HealthCheckTemplate": "http://172.16.50.72:5001/health",
+        "Endpoints": [],
+        "Consul": {
+            "HttpEndpoint": "http://172.16.100.198:8500", //consul的地址
+            "DnsEndpoint": {
+                "Address": "127.0.0.1",
+                "Port": 8600
+            }
+        }
+    },
+    "Jaeger": {
+        //Jaeger上的服务名
+        "ServiceName": "Horizon.Sample.GrpcServices",
+        "AgentIp": "172.16.100.198",
+        "AgentPort": 6831
     }
-  },
-  "Jaeger": {
-    //Jaeger上的服务名
-    "ServiceName": "Horizon.Sample.GrpcServices",
-    "AgentIp": "127.0.0.1",
-    "AgentPort": 6831
-  }
 }

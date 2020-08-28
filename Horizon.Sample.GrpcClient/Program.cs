@@ -8,6 +8,7 @@ using Horizon.GRPC;
 using Horizon.Sample.GrpcServices;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
+using Channel = Grpc.Core.Channel;
 
 namespace Horizon.Sample.GrpcClient
 {
@@ -31,13 +32,13 @@ namespace Horizon.Sample.GrpcClient
                 .Add(new JsonConfigurationSource { Path = "config/servers.json", ReloadOnChange = true })
                 .Build();
 
-           var  url=GrpcServiceManager.GetGrpcServicesHosts("Horizon.Sample.GrpcServices", "", config);
+          // var  url=GrpcServiceManager.GetGrpcServicesHosts("Horizon.Sample.GrpcServices", "", config);
 
-            url = "http://" + url;
+           // url = "http://" + url;
 
-            var channel = GrpcChannel.ForAddress(url, new GrpcChannelOptions { HttpClient = httpClient });
+           // var channel = GrpcChannel.ForAddress(url, new GrpcChannelOptions { HttpClient = httpClient });
 
-            //var channel = new Channel("127.0.0.1:50051", ChannelCredentials.Insecure);
+            var channel = new Channel("127.0.0.1:5021", ChannelCredentials.Insecure);
 
             var clinet = new Greeter.GreeterClient(channel);
 

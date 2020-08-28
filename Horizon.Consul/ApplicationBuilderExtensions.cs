@@ -64,7 +64,7 @@ namespace Horizon.Consul
                     Log.Information($"Adding healthcheck for {serviceID},checking {healthCheck}");
                 }
                 var registryInformation = app.AddTenant(serviceDiscoveryOption.ServiceName, serviceDiscoveryOption.Version, address, healthCheckUri: healthCheck, tags: new[] { $"urlprefix-/{serviceDiscoveryOption.ServiceName}" });
-                Log.Information("Registering sevices...........");
+                Log.Information($"Registering sevices {serviceDiscoveryOption.ServiceName} and {healthCheck} on {address}...........");
 
                 // register service & health check cleanup
                 applicationLifetime.ApplicationStopping.Register(() =>
@@ -90,6 +90,10 @@ namespace Horizon.Consul
             }
 
             var serviceRegistry = app.ApplicationServices.GetRequiredService<ServiceRegistry>();
+
+
+            Log.Information($"Registering sevices {serviceName} and {healthCheckUri} on {uri}...........");
+
             var serviceInformation = serviceRegistry.RegisterServiceAsync(serviceName, version, uri, healthCheckUri, tags)
                 .Result;
 

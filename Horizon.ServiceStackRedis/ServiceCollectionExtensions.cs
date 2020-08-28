@@ -17,7 +17,6 @@ namespace Horizon.ServiceStackRedis
             services.Configure<RedisClientConfig>(configuration.GetSection("redis"));
             services.AddSingleton<ICacheProvider, RedisCacheProvider>();
             return services;
-            
         }
     }
 }
