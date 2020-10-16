@@ -1,10 +1,13 @@
 using System.IO;
+using System.Net;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
+using System.Runtime.InteropServices;
 
 namespace Horizon.Sample.GrpcServices
 {
@@ -19,14 +22,15 @@ namespace Horizon.Sample.GrpcServices
                  outputTemplate: "发生时间:{Timestamp: HH:mm:ss.fff} 事件级别:{Level} 详细信息:{Message}{NewLine}{Exception}")
                 .WriteTo.File(Path.Combine("Logs", "log.log"), rollingInterval: RollingInterval.Day)//文件生成到当前路径 rollingInterval:RollingInterval.Day:按天生成文件
                 .CreateLogger();
-            
+
             Log.Information("serilog is config.......");
 
             CreateHostBuilder(args)
                 .UseConsoleLifetime()
+                .UseContentRoot(Directory.GetCurrentDirectory())
                 .ConfigureLogging(logger =>
                 {
-                    
+
                     //logger.AddFilter("Microsoft", LogLevel.Critical)
                     //    .AddFilter("System", LogLevel.Critical);
                 })
@@ -39,10 +43,16 @@ namespace Horizon.Sample.GrpcServices
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
 
-                .ConfigureAppConfiguration(config =>
+                .ConfigureAppConfiguration((context,config) =>
                 {
-                    config.AddJsonFile("config\\servers.json", false, true);
+                    string url = context.HostingEnvironment.ContentRootPath;
+                    var  rs= Directory.GetCurrentDirectory();
+                    Log.Information($@"rootpath :{url}" );
+                    //var  rs =RuntimeEnvironment.GetRuntimeDirectory();
+                    
+                    config.AddJsonFile($"{rs}/Config/servers.json", false, true);
                 })
+
         //.ConfigureWebHostDefaults(options =>
         //{
         //    options.ConfigureKestrel(o =>
@@ -56,7 +66,8 @@ namespace Horizon.Sample.GrpcServices
         {
             webBuilder.UseSerilog();
             webBuilder.UseStartup<Startup>();
-            webBuilder.UseUrls("http://172.16.50.72:5021");
+
+        
             webBuilder.ConfigureKestrel((context, options) =>
             {
                 options.Limits.MinRequestBodyDataRate = null;
@@ -65,13 +76,18 @@ namespace Horizon.Sample.GrpcServices
             //配置grpc的协议端口
             webBuilder.UseKestrel(ops =>
             {
-                ops.ListenAnyIP(5021, p => p.Protocols =
-                    Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http2);
+                ops.Listen(IPAddress.Any, 5021, listenOptions =>
+                {
+                    listenOptions.Protocols = HttpProtocols.Http2;
+                            //listenOptions.UseHttps("<path to .pfx file>", 
+                            //    "<certificate password>");
+                        });
             });
-            //配置http健康检查协议端口
-            webBuilder.UseKestrel(o=>
+
+            ////配置http健康检查协议和mvc端口
+            webBuilder.UseKestrel(o =>
             {
-                o.ListenAnyIP(5001);
+                o.ListenAnyIP(5025);
             });
         });
         //.ConfigureAppConfiguration((hostingContext, _config) =>

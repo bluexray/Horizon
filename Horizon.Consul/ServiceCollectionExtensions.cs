@@ -1,15 +1,12 @@
-﻿using Consul;
-using DnsClient;
+﻿using DnsClient;
 using Horizon.Consul.Configurations;
 using Horizon.Core.Services;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using System;
 using System.Net;
-using System.Runtime.CompilerServices;
 
 namespace Horizon.Consul
 {

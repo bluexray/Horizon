@@ -18,19 +18,11 @@ namespace Horizon.GRPC
             IConfiguration conf)
         {
 
-            //注入配制
-            //services.Configure<GrpcServerOptions>(conf.GetSection("GrpcServer"));
-            //添加IGrpService
-            //services.Scan(scan => scan
-            //    .FromAssemblyOf<TStartup>()
-            //    .AddClasses(classes => classes.AssignableTo<IGrpcService>())
-            //    .AsImplementedInterfaces()
-            //    .WithSingletonLifetime());
-            //添加ServerBuilder
-            //services.AddSingleton<ServerBuilder>();
+
             //添加服务端中间件
-            //services.AddServerInterceptor<MonitorInterceptor>();
-            //services.AddServerInterceptor<ThrottleInterceptor>();
+            services.AddServerInterceptor<MonitorInterceptor>();
+         
+            
             //Jaeger
             services.AddJaeger(conf);
          
@@ -41,6 +33,9 @@ namespace Horizon.GRPC
 
             return services;
         }
+
+
+
 
         /// <summary>
         /// 添加Jaeger和Interceptor

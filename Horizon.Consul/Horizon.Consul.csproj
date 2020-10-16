@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <Reference Include="Consul">
-      <HintPath>..\refdll\Consul.dll</HintPath>
+      <HintPath>..\..\dll\Consul.dll</HintPath>
     </Reference>
   </ItemGroup>
 

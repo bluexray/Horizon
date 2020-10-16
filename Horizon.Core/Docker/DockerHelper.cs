@@ -18,6 +18,12 @@ namespace Horizon.Core.Docker
             }
         }
 
+        public static string DockerId()
+        {
+            string hostname = Environment.GetEnvironmentVariable("HOSTNAME", EnvironmentVariableTarget.Process);
+            return string.IsNullOrWhiteSpace(hostname) ? "" : hostname;
+        }
+
         public static string? ContainerAddress
         {
             get

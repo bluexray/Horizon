@@ -32,7 +32,7 @@ namespace Horizon.Core.Security
         {
             bytes.CheckNotNullOrEmpty("bytes");
             StringBuilder sb = new StringBuilder();
-            MD5 hash = new MD5CryptoServiceProvider();
+            System.Security.Cryptography.MD5 hash = new MD5CryptoServiceProvider();
             bytes = hash.ComputeHash(bytes);
             foreach (byte b in bytes)
             {

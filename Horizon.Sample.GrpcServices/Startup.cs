@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SkyApm.Utilities.DependencyInjection;
 using System;
+using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace Horizon.Sample.GrpcServices
 {
@@ -21,9 +22,11 @@ namespace Horizon.Sample.GrpcServices
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+          
         }
 
         public IConfiguration Configuration { get; }
+
 
 
         
@@ -48,12 +51,14 @@ namespace Horizon.Sample.GrpcServices
 
             services.AddSkyApmExtensions();
 
+          
+            
 
-            IConfiguration config = new ConfigurationBuilder()
-                                    .Add(new JsonConfigurationSource { Path = "config/servers.json", ReloadOnChange = true })
-                                    .Build();
+            //IConfiguration config = new ConfigurationBuilder()
+            //                        .Add(new JsonConfigurationSource { Path = "config/servers.json", ReloadOnChange = true })
+            //                        .Build();
 
-            var result = config.GetSection("ServiceDiscovery")["ServiceName"];
+            //var result = config.GetSection("ServiceDiscovery")["ServiceName"];
 
             //services.Configure<ConsulHostConfiguration>()
 
@@ -65,17 +70,17 @@ namespace Horizon.Sample.GrpcServices
 
             services.AddHorizonConsul(Configuration);//增加consul的配置
 
-            services.AddHorizonGrpc<Startup>(config);
+            services.AddHorizonGrpc<Startup>(Configuration);
 
 
-            ConsulServiceDiscoveryOption host = new ConsulServiceDiscoveryOption();
-            config.GetSection("ServiceDiscovery").Bind(host);
+            //ConsulServiceDiscoveryOption host = new ConsulServiceDiscoveryOption();
+            //config.GetSection("ServiceDiscovery").Bind(host);
 
-            var serviecname = host.ServiceName;
-            var s = host.Consul.HttpEndpoint;
+            //var serviecname = host.ServiceName;
+            //var s = host.Consul.HttpEndpoint;
 
-            Console.WriteLine($"servicename:{serviecname}");
-            Console.WriteLine($"url:{s}");
+            //Console.WriteLine($"servicename:{serviecname}");
+            //Console.WriteLine($"url:{s}");
 
             //services.AddCors(options => options.AddPolicy
             //                    (
@@ -96,6 +101,8 @@ namespace Horizon.Sample.GrpcServices
                 app.UseDeveloperExceptionPage();
             }
 
+
+            
             app.UseHorizonConsul(Configuration);//使用consul
 
            

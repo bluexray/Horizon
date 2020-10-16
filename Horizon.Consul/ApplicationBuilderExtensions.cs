@@ -11,11 +11,16 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
+using Horizon.Core.Docker;
+using Horizon.Core.Extensions;
 
 namespace Horizon.Consul
 {
     public static class ApplicationBuilderExtensions
     {
+        
+
         public static IApplicationBuilder UseHorizonConsul(this IApplicationBuilder app, IConfiguration configuration)
         {
 
@@ -40,27 +45,86 @@ namespace Horizon.Consul
 
             IEnumerable<Uri> addresses = null;
 
+            var dockerip = "";
+
             if (serviceDiscoveryOption.Endpoints != null && serviceDiscoveryOption.Endpoints.Length > 0)
             {
-                
                 Log.Information($"Using {serviceDiscoveryOption.Endpoints.Length} configured endpoints for service registration");
                 addresses = serviceDiscoveryOption.Endpoints.Select(p => new Uri(p));
             }
             else
             {
-               Log.Information($"Trying to use server.Features to figure out the service endpoint for registration.");
-                var features = app.Properties["server.Features"] as FeatureCollection;
-                addresses = features.Get<IServerAddressesFeature>().Addresses.Select(p => new Uri(p)).ToArray();
+                if (!DockerHelper.IsRunningInDocker)
+                {
+                    Log.Information($"Trying to use server.Features to figure out the service endpoint for registration.");
+                    var features = app.Properties["server.Features"] as FeatureCollection;
+                    addresses = features.Get<IServerAddressesFeature>().Addresses.Select(p => new Uri(p)).ToArray();
+                    Log.Information($"this services ip is : {addresses.First().DnsSafeHost}");
+                }
+                else
+                {
+                    Log.Information($"Triying to use docker to figure out the service endpoint for registration.");
+
+                    Log.Information($"The Docker IP is {DockerHelper.ContainerAddress}....setup 1.");
+                    if (DockerHelper.ContainerAddress != null)
+                    {
+                        Log.Information($"The Docker IP is {DockerHelper.ContainerAddress}....setup 2.");
+                        dockerip = DockerHelper.ContainerAddress;
+                        Log.Information($"This services {DockerHelper.ContainerAddress} on docker.");
+                    }
+                    else
+                    {
+                        throw new ArgumentException("can not get docker services ip");
+                    }
+                }
             }
 
+            //run in docker
+            if (DockerHelper.IsRunningInDocker)
+            {
+                var port=5022;
+                var address = new Uri("http://" + dockerip + ":" + port);
+                var serviceID = GetServiceId(serviceDiscoveryOption.ServiceName, address);
+                Log.Information($"Registering service {serviceID} for address {dockerip}.");
+                Uri healthCheck = null;
+                string url = "";
+                if (!string.IsNullOrEmpty(serviceDiscoveryOption.HealthCheckTemplate))
+                {
+                    url = "http://" + dockerip + ":" + serviceDiscoveryOption.HealthCheckTemplate;
+
+
+                    healthCheck = new Uri(url);
+                    //healthCheck = new Uri(address, serviceDiscoveryOption.HealthCheckTemplate);
+                    Log.Information($"Adding healthcheck for {serviceID},checking {healthCheck}");
+                }
+                var registryInformation = app.AddTenant(serviceDiscoveryOption.ServiceName, serviceDiscoveryOption.Version, address, healthCheckUri: healthCheck, tags: new[] { $"urlprefix-/{serviceDiscoveryOption.ServiceName}" });
+                Log.Information($"Registering sevices {serviceDiscoveryOption.ServiceName} and {healthCheck} on {address}...........");
+
+                // register service & health check cleanup
+                applicationLifetime.ApplicationStopping.Register(() =>
+                {
+                    Log.Information("Removing tenant & additional health check");
+                    app.RemoveTenant(registryInformation.Id);
+                });
+                return app;
+            }
+
+
+
+            //run in os
             foreach (var address in addresses)
             {
                 var serviceID = GetServiceId(serviceDiscoveryOption.ServiceName, address);
                 Log.Information($"Registering service {serviceID} for address {address}.");
                 Uri healthCheck = null;
+                string url = "";
                 if (!string.IsNullOrEmpty(serviceDiscoveryOption.HealthCheckTemplate))
                 {
-                    healthCheck = new Uri(address, serviceDiscoveryOption.HealthCheckTemplate);
+                    url = "http://" + address.DnsSafeHost + ":" + serviceDiscoveryOption.HealthCheckTemplate;
+
+
+                    healthCheck = new Uri(url);
+                    //healthCheck = new Uri(address, serviceDiscoveryOption.HealthCheckTemplate);
                     Log.Information($"Adding healthcheck for {serviceID},checking {healthCheck}");
                 }
                 var registryInformation = app.AddTenant(serviceDiscoveryOption.ServiceName, serviceDiscoveryOption.Version, address, healthCheckUri: healthCheck, tags: new[] { $"urlprefix-/{serviceDiscoveryOption.ServiceName}" });
@@ -97,7 +161,7 @@ namespace Horizon.Consul
             var serviceInformation = serviceRegistry.RegisterServiceAsync(serviceName, version, uri, healthCheckUri, tags)
                 .Result;
 
-            
+
 
             return serviceInformation;
         }

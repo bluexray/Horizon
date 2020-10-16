@@ -2,7 +2,7 @@
     "ServiceDiscovery": {
         "ServiceName": "Horizon.Sample.GrpcServices",
         "Version": "1.0.0-pre",
-        "HealthCheckTemplate": "http://172.16.50.72:5001/health",
+        "HealthCheckTemplate": "5025/health",
         "Endpoints": [],
         "Consul": {
             "HttpEndpoint": "http://172.16.100.198:8500", //consulµÄµØÖ·

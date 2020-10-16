@@ -25,6 +25,8 @@ namespace Horizon.Sample.ConAppClinet
             await GrpcServiceManager.CallService("http://localhost:10042", async channel =>
              {
                  var clinet = channel.CreateGrpcService<IStudentCollection>();
+
+                 
                  var rs = await clinet.GetStudentAsync(new ResponeConext
                  {
                      Name = "Peter"

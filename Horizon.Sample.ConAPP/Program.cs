@@ -22,15 +22,18 @@ namespace Horizon.Sample.ConAPPService
             CreateHostBuilder(args).Build().Run();
 
             ////非asp.net core的启动方式
-            //const int Port = 50051;
+            const int Port = 50051;
 
-            //Server server = new Server
-            //{
-            //    Ports = { new ServerPort("localhost", Port, ServerCredentials.Insecure) }
-            //};
-            //server.Services.AddCodeFirst(new MySevices());
+            Server server = new Server
+            {
+               
+                Ports = { new ServerPort("localhost", Port, ServerCredentials.Insecure) }
+            };
 
-            //server.Start();
+            
+            server.Services.AddCodeFirst(new MySevices());
+
+            server.Start();
 
             //Console.WriteLine("Greeter server listening on port " + Port);
             //Console.WriteLine("Press any key to stop the server...");

@@ -1,16 +1,13 @@
-﻿using Grpc.Net.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Grpc.Core;
-using Serilog;
+﻿using Grpc.Core;
+using Grpc.Net.Client;
 using Horizon.Consul;
 using Horizon.Consul.Configurations;
 using Horizon.Core.Router;
-using Horizon.Core.Services;
 using Microsoft.Extensions.Configuration;
+using Serilog;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Horizon.GRPC
 {
@@ -37,7 +34,7 @@ namespace Horizon.GRPC
             //GrpcClientFactory.AllowUnencryptedHttp2 = true;
 
             var channel = GrpcChannel.ForAddress(urlGrpc,options);
-
+            
             /*
             using var httpClientHandler = new HttpClientHandler
             {
@@ -111,9 +108,13 @@ namespace Horizon.GRPC
 
             var r = proxy.FindAllServicesAsync().Result;
 
-          var q=  r.FirstOrDefault(x => x.Name == serviceName);
+            var q=  r.FirstOrDefault(x => x.Name == serviceName);
+            if (q==null)
+            {
+                return "127.0.0.1:8600";
+            }
 
-          return q.HostAndPort.ToString();
+            return q.HostAndPort.ToString();
 
 
             var rs = proxy.FindServiceInstancesAsync(serviceName,serviceTags);

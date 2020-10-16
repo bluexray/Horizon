@@ -1,4 +1,5 @@
 syntax = "proto3";
+import "google/protobuf/timestamp.proto";
 
 option csharp_namespace = "Horizon.Sample.GrpcServices";
 
@@ -18,4 +19,5 @@ message HelloRequest {
 // The response message containing the greetings.
 message HelloReply {
   string message = 1;
+  google.protobuf.Timestamp DateTo = 12;
 }
